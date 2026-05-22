@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday My Love</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(to bottom, #a8e6cf, #fceabb, #f8b6d2, #a0e7e5);
+      text-align: center;
+    }
+    .landing, .access {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    h1 {
+      color: #2e7d32;
+      font-size: 1.8em;
+      margin-bottom: 20px;
+    }
+    .countdown-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+      gap: 10px;
+      width: 100%;
+      max-width: 400px;
+    }
+    .time-box {
+      background: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .time-box span {
+      display: block;
+      font-size: 1.4em;
+      font-weight: bold;
+      color: #388e3c;
+      animation: flip 0.6s ease;
+    }
+    .glow {
+      text-shadow: 0 0 10px #ffeb3b, 0 0 20px #ff5722;
+    }
+    .label {
+      font-size: 0.8em;
+      color: #1b5e20;
+      margin-top: 5px;
+    }
+    @keyframes flip {
+      0% { transform: rotateX(0deg); }
+      50% { transform: rotateX(90deg); opacity: 0.5; }
+      100% { transform: rotateX(0deg); opacity: 1; }
+    }
+    .locked {
+      font-size: 1em;
+      color: #1b5e20;
+      margin-top: 20px;
+    }
+    .content {
+      display: none;
+      padding: 20px;
+    }
+    .card {
+      background: rgba(255,255,255,0.9);
+      margin: 15px auto;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      max-width: 500px;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    #balloons {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .balloon {
+      position: absolute;
+      width: 40px;
+      height: 60px;
+      background: radial-gradient(circle at 20px 20px, #ff4081, #f50057);
+      border-radius: 50% 50% 50% 50%;
+      animation: rise 5s linear forwards;
+    }
+    @keyframes rise {
+      0% { bottom: -60px; opacity: 1; }
+      80% { opacity: 1; }
+      100% { bottom: 100%; opacity: 0; transform: scale(0.1); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Form akses khusus -->
+  <div class="access" id="access">
+    <h1>Masukkan Kode Akses</h1>
+    <input type="password" id="password" placeholder="Kode rahasia">
+    <button onclick="checkAccess()">Masuk</button>
+  </div>
+
+  <!-- Landing countdown -->
+  <div class="landing" id="landing" style="display:none;">
+    <h1>🎉 Happy Birthday My Love 🎂</h1>
+    <div class="countdown-box">
+      <div class="time-box"><span id="days">0</span><div class="label">Hari</div></div>
+      <div class="time-box"><span id="hours">0</span><div class="label">Jam</div></div>
+      <div class="time-box"><span id="minutes">0</span><div class="label">Menit</div></div>
+      <div class="time-box"><span id="seconds">0</span><div class="label">Detik</div></div>
+    </div>
+    <div class="locked">Website akan terbuka saat waktunya tiba 💚</div>
+  </div>
+
+  <!-- Konten utama -->
+  <div class="content" id="content">
+    <div class="card">
+      <h2>Ucapan Spesial</h2>
+      <p>Selamat ulang tahun, sayangku! 🎉<br>
+      Semoga hari ini penuh kebahagiaan, warna, dan tawa.<br>
+      Kamu adalah orang yang paling berarti buatku 💚</p>
+    </div>
+    <div class="card">
+  <h2>Galeri Foto Interaktif 📸</h2>
+  <div class="gallery">
+    <img src="image/sekul.jpeg" alt="Kenangan 1" onclick="openLightbox(0)">
+    <img src="image/sekull.jpeg" alt="Kenangan 2" onclick="openLightbox(1)">
+    <img src="image/dira.jpeg" alt="Kenangan 3" onclick="openLightbox(2)">
+    <img src="image/lap.jpeg" alt="Kenangan 4" onclick="openLightbox(3)">
+    <img src="foto5.jpg" alt="Kenangan 5" onclick="openLightbox(4)">
+    <img src="image/lapp.jpeg" alt="Kenangan 6" onclick="openLightbox(5)">
+  </div>
+</div>
+
+<!-- Lightbox fullscreen -->
+<div id="lightbox" class="lightbox">
+  <span class="close" onclick="closeLightbox()">&times;</span>
+  <img id="lightbox-img" src="" alt="Foto besar">
+  <div class="nav">
+    <span class="prev" onclick="changePhoto(-1)">&#10094;</span>
+    <span class="next" onclick="changePhoto(1)">&#10095;</span>
+  </div>
+</div>
+
+<style>
+  .gallery {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .gallery img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+  .gallery img:hover {
+    transform: scale(1.1);
+  }
+  .lightbox {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    text-align: center;
+  }
+  .lightbox img {
+    max-width: 90%;
+    max-height: 80%;
+    margin-top: 5%;
+    border-radius: 10px;
+  }
+  .close {
+    position: absolute;
+    top: 20px; right: 30px;
+    font-size: 40px;
+    color: #fff;
+    cursor: pointer;
+  }
+  .nav .prev, .nav .next {
+    position: absolute;
+    top: 50%;
+    font-size: 40px;
+    color: #fff;
+    cursor: pointer;
+    user-select: none;
+  }
+  .nav .prev { left: 20px; }
+  .nav .next { right: 20px; }
+</style>
+
+<script>
+  const photos = [
+    "sekul.jpeg","foto2.jpg","foto3.jpg",
+    "foto4.jpg","foto5.jpg","foto6.jpg"
+  ];
+  let currentIndex = 0;
+
+  function openLightbox(index) {
+    currentIndex = index;
+    document.getElementById("lightbox").style.display = "block";
+    document.getElementById("lightbox-img").src = photos[index];
+  }
+
+  function closeLightbox() {
+    document.getElementById("lightbox").style.display = "none";
+  }
+
+  function changePhoto(step) {
+    currentIndex += step;
+    if (currentIndex < 0) currentIndex = photos.length - 1;
+    if (currentIndex >= photos.length) currentIndex = 0;
+    document.getElementById("lightbox-img").src = photos[currentIndex];
+  }
+</script>
+
+      <div class="card">
+  <h2>our favorit music 🎶</h2>
+  <audio id="bgmusic" controls autoplay loop style="width:100%;">
+    <source src="music/Nidji - Rahasia Hati copy.mp3" type="audio/mpeg">
+    Browser kamu tidak mendukung audio.
+  </audio>
+</div>
+
+<script>
+  function playSong(file) {
+    const music = document.getElementById("bgmusic");
+    music.src = file;
+    music.play();
+  }
+</script>
+
+
+  <div id="balloons"></div>
+
+  <script>
+    const access = document.getElementById("access");
+    const landing = document.getElementById("landing");
+    const content = document.getElementById("content");
+    const targetDate = new Date("May 23, 2026 00:00:00").getTime();
+
+    const daysEl = document.getElementById("days");
+    const hoursEl = document.getElementById("hours");
+    const minutesEl = document.getElementById("minutes");
+    const secondsEl = document.getElementById("seconds");
+
+    function checkAccess() {
+      const pass = document.getElementById("password").value;
+      if (pass === "putri") { // password khusus
+        access.style.display = "none";
+        content.style.display = "block";
+      } else {
+        access.style.display = "none";
+        landing.style.display = "flex";
+        startCountdown();
+      }
+    }
+
+    function startCountdown() {
+      const timer = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+
+        if (distance <= 0) {
+          clearInterval(timer);
+          landing.style.display = "none";
+          content.style.display = "block";
+          balloonBurst();
+        } else {
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+          animateChange(daysEl, days);
+          animateChange(hoursEl, hours);
+          animateChange(minutesEl, minutes);
+          animateChange(secondsEl, seconds);
+        }
+      }, 1000);
+    }
+
+    function animateChange(el, newVal) {
+      if (el.innerHTML != newVal) {
+        el.innerHTML = newVal;
+        el.classList.add("glow");
+        el.style.animation = "flip 0.6s ease";
+        setTimeout(() => { 
+          el.style.animation = ""; 
+          el.classList.remove("glow");
+        }, 600);
+      }
+    }
+
+    // Musik mute/unmute
+    function toggleMusic() {
+      const music = document.getElementById("bgmusic");
+      music.muted = !music.muted;
+    }
+
+    // Animasi balon pecah
+    function balloonBurst() {
+      const container = document.getElementById("balloons");
+      for (let i = 0; i < 15; i++) {
+        const balloon = document.createElement("div");
+        balloon.className = "balloon";
+        balloon.style.left = Math.random() * window.innerWidth + "px";
+        container.appendChild(balloon);
+        setTimeout(() => balloon.remove(), 5000);
+      }
+    }
+  </script>
+<div id="game" style="margin-top:20px;">
+  <h2>Mainkan Game Pecahkan Balon 🎈</h2>
+  <p>Skor: <span id="score">0</span></p>
+  <div id="game-area" style="position:relative;width:100%;max-width:400px;height:300px;margin:auto;border:2px solid #4caf50;border-radius:10px;overflow:hidden;background:#e0f7fa;">
+  </div>
+</div>
+
+<script>
+  let score = 0;
+  const gameArea = document.getElementById("game-area");
+  const scoreEl = document.getElementById("score");
+
+  // daftar warna balon
+  const colors = [
+    "radial-gradient(circle at 20px 20px, #ff4081, #f50057)", // pink
+    "radial-gradient(circle at 20px 20px, #42a5f5, #1e88e5)", // biru
+    "radial-gradient(circle at 20px 20px, #66bb6a, #2e7d32)", // hijau
+    "radial-gradient(circle at 20px 20px, #ffee58, #fbc02d)", // kuning
+    "radial-gradient(circle at 20px 20px, #ab47bc, #8e24aa)", // ungu
+    "radial-gradient(circle at 20px 20px, #ef5350, #c62828)"  // merah
+  ];
+
+  function createBalloon() {
+    const balloon = document.createElement("div");
+    balloon.className = "balloon-game";
+    balloon.style.left = Math.random() * (gameArea.offsetWidth - 40) + "px";
+    balloon.style.top = gameArea.offsetHeight + "px";
+
+    // pilih warna acak
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    balloon.style.background = randomColor;
+
+    gameArea.appendChild(balloon);
+
+    // Animasi naik
+    let pos = gameArea.offsetHeight;
+    const rise = setInterval(() => {
+      pos -= 2;
+      balloon.style.top = pos + "px";
+      if (pos < -60) {
+        clearInterval(rise);
+        balloon.remove();
+      }
+    }, 20);
+
+    // Klik untuk pecah
+    balloon.addEventListener("click", () => {
+      clearInterval(rise);
+      balloon.remove();
+      score++;
+      scoreEl.textContent = score;
+      // Efek suara pop (opsional)
+      const popSound = new Audio("pop.mp3"); // siapkan file pop.mp3
+      popSound.play();
+    });
+  }
+
+  // Tambahkan CSS untuk balon
+  const style = document.createElement("style");
+  style.innerHTML = `
+    .balloon-game {
+      position: absolute;
+      width: 40px;
+      height: 60px;
+      border-radius: 50% 50% 50% 50%;
+      cursor: pointer;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Spawn balon setiap 1.5 detik
+  setInterval(createBalloon, 1500);
+</script>
+
+
+</body>
+echo "# putri-s-repository" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/putrisuhud88-wq/putri-s-repository.git
+git push -u origin main
+</html>
